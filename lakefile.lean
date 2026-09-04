@@ -11,6 +11,7 @@ lean_lib NashEquilibrium where
   roots := #[
     `NashEquilibrium.Basic,
     `NashEquilibrium.Mixed,
+    `NashEquilibrium.MixedTopology,
     `NashEquilibrium.Examples]
 
 @[default_target]

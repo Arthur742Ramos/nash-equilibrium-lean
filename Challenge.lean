@@ -1,5 +1,9 @@
 import Mathlib.Data.Finset.Max
 import Mathlib.Data.Fintype.Pi
+import Mathlib.Algebra.BigOperators.GroupWithZero.Finset
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
 
 namespace NashEquilibrium
 
@@ -110,6 +114,35 @@ theorem deviation_isProfile
   · subst q
     simpa [deviation] using ha
   · simpa [deviation, hqp] using hs q
+
+/-! A compact mixed-strategy statement surface.  These definitions mirror the
+native mixed layer, while the selected theorem below is proved directly from
+finite sums and the probability constraints. -/
+
+abbrev MixedProfile (Player : Type u) (Move : Type v) := Player → Move → ℝ
+
+structure MixedGame (Player : Type u) (Move : Type v)
+    [Fintype Player] [Fintype Move] [DecidableEq Player] [DecidableEq Move] where
+  payoff : Player → Profile Player Move → ℝ
+
+def IsMixedProfile (m : MixedProfile Player Move) : Prop :=
+  (∀ p a, 0 ≤ m p a) ∧ ∀ p, ∑ a : Move, m p a = 1
+
+def opponentWeight (m : MixedProfile Player Move) (p : Player)
+    (s : Profile Player Move) : ℝ :=
+  ∏ q ∈ Finset.univ.erase p, m q (s q)
+
+def pureDeviationPayoff (G : MixedGame Player Move) (m : MixedProfile Player Move)
+    (p : Player) (a : Move) : ℝ :=
+  ∑ s : Profile Player Move,
+    if s p = a then opponentWeight m p s * G.payoff p s else 0
+
+def mixedPayoff (G : MixedGame Player Move) (m : MixedProfile Player Move)
+    (p : Player) : ℝ :=
+  ∑ a : Move, m p a * pureDeviationPayoff G m p a
+
+def IsMixedNash (G : MixedGame Player Move) (m : MixedProfile Player Move) : Prop :=
+  IsMixedProfile m ∧ ∀ p a, pureDeviationPayoff G m p a ≤ mixedPayoff G m p
 
 namespace Palomar
 
@@ -233,6 +266,38 @@ theorem weaklyAcyclic_of_generalized_ordinal_potential
     (hpotential : IsGeneralizedOrdinalPotential G potential) :
     IsWeaklyAcyclic G := by
   sorry
+
+/-- A mixed Nash equilibrium equalizes every pure move in its support. -/
+theorem mixedNash_support_payoff_eq
+    {G : MixedGame Player Move} {m : MixedProfile Player Move}
+    (h : IsMixedNash G m) {p : Player} {a : Move} (ha : 0 < m p a) :
+    pureDeviationPayoff G m p a = mixedPayoff G m p := by
+  have hm : IsMixedProfile m := h.1
+  have hgap_nonneg (b : Move) :
+      0 ≤ m p b * (mixedPayoff G m p - pureDeviationPayoff G m p b) := by
+    exact mul_nonneg (hm.1 p b) (sub_nonneg.mpr (h.2 p b))
+  have hsum :
+      (∑ b : Move, m p b * (mixedPayoff G m p - pureDeviationPayoff G m p b)) = 0 := by
+    calc
+      (∑ b : Move, m p b * (mixedPayoff G m p - pureDeviationPayoff G m p b)) =
+          (∑ b : Move, m p b * mixedPayoff G m p) -
+            (∑ b : Move, m p b * pureDeviationPayoff G m p b) := by
+        rw [← Finset.sum_sub_distrib]
+        apply Finset.sum_congr rfl
+        intro b hb
+        ring
+      _ = (∑ b : Move, m p b) * mixedPayoff G m p - mixedPayoff G m p := by
+        simp [mixedPayoff, Finset.sum_mul]
+      _ = 0 := by
+        rw [hm.2 p]
+        ring
+  have hterm :
+      m p a * (mixedPayoff G m p - pureDeviationPayoff G m p a) = 0 :=
+    (Finset.sum_eq_zero_iff_of_nonneg (fun b _ => hgap_nonneg b)).mp hsum
+      a (Finset.mem_univ a)
+  have hdiff : mixedPayoff G m p - pureDeviationPayoff G m p a = 0 := by
+    exact (mul_eq_zero.mp hterm).resolve_left (ne_of_gt ha)
+  linarith
 
 end Palomar
 

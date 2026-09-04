@@ -1,4 +1,5 @@
 import NashEquilibrium.Basic
+import NashEquilibrium.Mixed
 
 namespace NashEquilibrium.Palomar
 
@@ -47,5 +48,11 @@ theorem weaklyAcyclic_of_generalized_ordinal_potential
     IsWeaklyAcyclic G := by
   exact NashEquilibrium.weaklyAcyclic_of_generalized_ordinal_potential
     G potential hpotential
+
+theorem mixedNash_support_payoff_eq
+    {G : MixedGame Player Move} {m : MixedProfile Player Move}
+    (h : IsMixedNash G m) {p : Player} {a : Move} (ha : 0 < m p a) :
+    pureDeviationPayoff G m p a = mixedPayoff G m p := by
+  exact NashEquilibrium.mixedNash_support_payoff_eq h ha
 
 end NashEquilibrium.Palomar

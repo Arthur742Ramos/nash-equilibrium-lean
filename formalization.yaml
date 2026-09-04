@@ -13,8 +13,10 @@ project:
     equilibrium, the standard Nash/local-potential-maximum equivalence, and
     acyclicity of the better-response relation for the generalized class. The
     development also gives checked counterexamples and
-    Prisoner's-Dilemma/matching-pennies examples, including the uniform mixed
-    equilibrium for matching pennies.
+    Prisoner's-Dilemma/coordination/matching-pennies/rock-paper-scissors
+    examples. Its native mixed layer proves support equalization, Dirac
+    transport, the normalized excess-map reduction, and the closed/compact/
+    convex/continuous finite mixed-profile geometry.
   authors:
     - "Arthur Freitas Ramos"
   license: "BSD-3-Clause"
@@ -26,6 +28,28 @@ classification:
   msc2020: ["91A10"]
 
 sources:
+  - title: "Equilibrium points in n-person games"
+    authors:
+      - "John F. Nash, Jr."
+    id: "https://doi.org/10.1073/pnas.36.1.48"
+    type: "article"
+    location: "https://doi.org/10.1073/pnas.36.1.48"
+    relationship: "foundational"
+    note: >-
+      Introduces the equilibrium concept for finite n-person games and the
+      mixed-strategy existence argument via a fixed-point theorem.
+    author_endorsement: "not-contacted"
+  - title: "Non-cooperative Games"
+    authors:
+      - "John F. Nash"
+    id: "https://doi.org/10.2307/1969529"
+    type: "article"
+    location: "https://doi.org/10.2307/1969529"
+    relationship: "foundational"
+    note: >-
+      Expanded foundational treatment of non-cooperative games and mixed
+      equilibrium existence.
+    author_endorsement: "not-contacted"
   - title: "Potential Games"
     authors:
       - "Dov Monderer"
@@ -64,6 +88,19 @@ sources:
     note: >-
       Places potential games in a flow/decomposition framework and provides
       subsequent structural context for the potential component.
+    author_endorsement: "not-contacted"
+  - title: "An Existence Theorem of Nash Equilibrium in Coq and Isabelle"
+    authors:
+      - "Stéphane Le Roux"
+      - "Érik Martin-Dorel"
+      - "Jan-Georg Smaus"
+    id: "https://doi.org/10.4204/EPTCS.256.4"
+    type: "inproceedings"
+    location: "https://doi.org/10.4204/EPTCS.256.4"
+    relationship: "subsequent formalization"
+    note: >-
+      A directly relevant formalization study of a Nash-equilibrium existence
+      theorem in both Coq and Isabelle.
     author_endorsement: "not-contacted"
   - title: "A Library for Algorithmic Game Theory in Ssreflect/Coq"
     authors:
@@ -105,13 +142,20 @@ related_formalizations:
       Prior Isabelle formalization of pure and mixed finite Nash equilibria.
       The Lean development changes the definitions and proof architecture,
       separates generalized from standard ordinal potentials, and adds the
-      explicit improvement-path interface.
+      explicit improvement-path interface. The current mixed layer also
+      formalizes the finite support/Dirac and analytic setup, but leaves the
+      final Brouwer theorem as an explicit dependency boundary.
   - id: "https://doi.org/10.6092/issn.1972-5787/7235"
     relationship: "comparative formalization"
     note: >-
       Prior Coq/Ssreflect library covering potential games and best-response
       dynamics; cited to position this Lean artifact without claiming
       methodological novelty over that work.
+  - id: "https://doi.org/10.4204/EPTCS.256.4"
+    relationship: "comparative formalization"
+    note: >-
+      Prior Coq and Isabelle formalization work on Nash-equilibrium existence;
+      cited to make the formalization lineage explicit.
 
 status:
   scope: >-
@@ -126,9 +170,10 @@ status:
     better-response path. A checked constant-payoff example demonstrates that
     generalized potentials may ascend on neutral deviations, so the two
     notions are not conflated. The library also defines mixed profiles and
-    finite expected payoffs and proves the uniform mixed equilibrium of
-    matching pennies. It does not claim a general mixed-Nash existence theorem
-    via Brouwer.
+    finite expected payoffs, proves support equalization and Dirac transport,
+    and supplies the normalized excess-map and finite mixed-profile topology
+    needed before a fixed-point theorem. It does not claim a general
+    mixed-Nash existence theorem via Brouwer.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: ["propext", "Quot.sound", "Classical.choice"]
@@ -154,10 +199,12 @@ fidelity:
     explicit finite sums for the mixed layer. Its potential layer deliberately
     distinguishes the generalized one-way condition from the standard
     bidirectional condition and exposes finite better-response paths. The
-    mixed layer currently formalizes the definitions and concrete
-    matching-pennies equilibrium; it does not reproduce the Isabelle
-    Brouwer-based general existence proof. The repository is an independent
-    Lean-native companion, not a file-level translation.
+    mixed layer formalizes native finite expected payoffs, support and Dirac
+    lemmas, the normalized excess-map reduction, concrete matching pennies and
+    rock-paper-scissors equilibria, and the closed/compact/convex continuous
+    mixed-profile setup. It does not reproduce the Isabelle Brouwer-based
+    final existence proof. The repository is an independent Lean-native
+    companion, not a file-level translation.
 
 review:
   status: "self-assessed"
@@ -221,11 +268,41 @@ alignment:
       module: "NashEquilibrium/Mixed.lean"
       status: "defined"
       note: "Nonnegative finite probability weights sum to one per player."
+    - source: "Mixed support equalization"
+      lean: "NashEquilibrium.Palomar.mixedNash_support_payoff_eq"
+      module: "Solution.lean"
+      status: "proved"
+      note: "Every strictly positive-probability move at a mixed Nash equilibrium receives the equilibrium payoff."
     - source: "Matching-pennies mixed equilibrium"
       lean: "NashEquilibrium.matchingPennies_uniform_mixed_nash"
       module: "NashEquilibrium/Examples.lean"
       status: "proved"
       note: "The uniform profile is a mixed equilibrium under finite enumeration."
+    - source: "Rock-paper-scissors mixed equilibrium"
+      lean: "NashEquilibrium.rps_uniform_mixed_nash"
+      module: "NashEquilibrium/Examples.lean"
+      status: "proved"
+      note: "The uniform profile is a mixed equilibrium under finite enumeration."
+    - source: "Mixed fixed-point reduction"
+      lean: "NashEquilibrium.mixedNash_of_nashMap_fixedPoint"
+      module: "NashEquilibrium/Mixed.lean"
+      status: "proved"
+      note: "A fixed point of the normalized excess map is a mixed Nash equilibrium."
+    - source: "Finite mixed-profile geometry"
+      lean: "NashEquilibrium.mixedProfiles_compact"
+      module: "NashEquilibrium/MixedTopology.lean"
+      status: "proved"
+      note: >-
+        The mixed-profile set is compact; corresponding closedness, convexity,
+        nonemptiness, and continuity lemmas are also proved.
+    - source: "Conditional mixed-equilibrium existence"
+      lean: "NashEquilibrium.exists_mixedNash_of_nashMap_fixedPoint"
+      module: "NashEquilibrium/MixedTopology.lean"
+      status: "proved"
+      note: >-
+        Any fixed point supplied for the normalized excess map yields a mixed
+        Nash equilibrium; a Brouwer theorem is the remaining external
+        analytic dependency.
 
 acknowledgements: >-
   Mathlib contributors; the Archive of Formal Proofs authors of the cited

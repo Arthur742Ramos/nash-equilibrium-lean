@@ -24,10 +24,15 @@ constant-payoff example demonstrates the terminology boundary: the generalized
 condition permits a strict potential rise on a payoff-neutral deviation, while
 the standard condition rejects it.
 
-The library also contains a finite mixed-strategy layer and checked examples:
+The library also contains a finite mixed-strategy layer and checked examples.
+It proves support equalization, zero probability for strictly suboptimal
+moves, Dirac transport from pure Nash profiles, the normalized excess-map
+construction, and the fixed-point-to-mixed-Nash reduction.  A companion
+topology module proves that the mixed-profile set is closed, compact, convex,
+and nonempty and that the payoff/excess/map operations are continuous.
 Prisoner's Dilemma has a dominant defection profile, matching pennies has no
-pure equilibrium, and its uniform profile is a mixed equilibrium under the
-finite expected-payoff definitions.
+pure equilibrium and a uniform mixed equilibrium, coordination has two pure
+equilibria, and rock-paper-scissors has a uniform mixed equilibrium.
 
 ## Build
 
@@ -45,9 +50,8 @@ scripts/verify-comparator.sh.
 ## Palomar surface
 
 Challenge.lean is intentionally small and standalone. It contains the
-mathematical statement with one proof hole and imports only the finite maximum
-and finite-function modules from Mathlib. Solution.lean imports the native implementation and
-provides the checked proofs under the matching namespace
+mathematical statement with one proof hole and imports only Mathlib. Solution.lean
+imports the native implementation and provides the checked proofs under the matching namespace
 NashEquilibrium.Palomar.
 
 The selected declarations are:
@@ -56,23 +60,31 @@ The selected declarations are:
     NashEquilibrium.Palomar.isNash_iff_potential_local_maximum
     NashEquilibrium.Palomar.no_betterResponse_cycle_of_generalized_ordinal_potential
     NashEquilibrium.Palomar.weaklyAcyclic_of_generalized_ordinal_potential
+    NashEquilibrium.Palomar.mixedNash_support_payoff_eq
 
 The Comparator definition targets make the Game, profile, deviation, Nash,
 standard/generalized potential, maximizer, local-maximum, and better-response
-interfaces explicit. The main Challenge theorem returns a reusable certificate
-containing both equilibrium stability and global potential maximality; it is
-stronger than a bare existential conclusion.
+interfaces explicit, and also checks the mixed-profile, finite payoff, and
+support-payoff interfaces. The main Challenge theorem returns a reusable
+certificate containing both equilibrium stability and global potential
+maximality; it is stronger than a bare existential conclusion.
 
 ## Literature and positioning
 
-The terminology follows [Monderer and Shapley, *Potential Games*](https://doi.org/10.1006/game.1996.0044):
+The equilibrium concept and its mixed-strategy existence theorem originate in
+[Nash's 1950 PNAS paper](https://doi.org/10.1073/pnas.36.1.48) and the expanded
+[1951 treatment](https://doi.org/10.2307/1969529). The terminology follows
+[Monderer and Shapley, *Potential Games*](https://doi.org/10.1006/game.1996.0044):
 the standard ordinal notion matches strict payoff and potential comparisons in
 both directions. The weaker one-way condition is tracked separately as a
 generalized ordinal potential. [Rosenthal's congestion-game paper](https://doi.org/10.1007/BF01737559)
 is the foundational precursor for potential-based pure-equilibrium existence.
 For later structural context, see [Candogan, Menache, Ozdaglar, and Parrilo](https://doi.org/10.1287/moor.1110.0500).
 
-The closest directly comparable formalization literature located is
+Relevant formalization literature includes [Le Roux, Martin-Dorel, and Smaus,
+*An Existence Theorem of Nash Equilibrium in Coq and Isabelle*](https://doi.org/10.4204/EPTCS.256.4),
+which formally studies a Nash-existence theorem in both Coq and Isabelle. The
+closest directly comparable formalization literature for potential games is
 [Bagnall, Merten, and Stewart's Ssreflect/Coq library](https://jfr.unibo.it/article/view/7235),
 which covers potential games and best-response dynamics. The companion
 [Isabelle/AFP entry](https://isa-afp.org/entries/Nash_Equilibrium.html) covers
@@ -85,11 +97,16 @@ it makes the potential terminology and improvement-path certificate explicit.
 
 The mathematical scope is informed by the published AFP entry
 [Nash Equilibria for Finite Games in Isabelle/HOL](https://isa-afp.org/entries/Nash_Equilibrium.html).
-The Lean development changes the definitions and proof architecture. In
-particular, it does not silently call the one-way improvement implication
+The Lean development changes the definitions and proof architecture. It now
+matches the AFP entry's elementary mixed-strategy infrastructure through
+support/Dirac lemmas and the analytic fixed-point setup, while retaining a
+different native profile representation. In particular, it does not silently call the one-way improvement implication
 "ordinal"; it names that class generalized and reserves the standard name for
-the bidirectional condition. The Isabelle Brouwer-based general mixed-Nash
-existence theorem is outside this repository's claim.
+the bidirectional condition. The Isabelle Brouwer-based final general
+mixed-Nash existence theorem remains outside this repository's claim because
+the pinned Mathlib dependency does not provide a Brouwer fixed-point theorem;
+the missing theorem is stated as an explicit dependency boundary rather than
+replaced by an axiom or proof placeholder.
 
 ## Status
 

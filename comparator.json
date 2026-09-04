@@ -5,7 +5,8 @@
     "NashEquilibrium.Palomar.exists_nash_maximizing_ordinal_potential",
     "NashEquilibrium.Palomar.isNash_iff_potential_local_maximum",
     "NashEquilibrium.Palomar.no_betterResponse_cycle_of_generalized_ordinal_potential",
-    "NashEquilibrium.Palomar.weaklyAcyclic_of_generalized_ordinal_potential"
+    "NashEquilibrium.Palomar.weaklyAcyclic_of_generalized_ordinal_potential",
+    "NashEquilibrium.Palomar.mixedNash_support_payoff_eq"
   ],
   "definition_names": [
     "NashEquilibrium.Profile",
@@ -17,7 +18,13 @@
     "NashEquilibrium.IsPotentialMaximizer",
     "NashEquilibrium.IsBetterResponseStep",
     "NashEquilibrium.IsPotentialLocalMaximum",
-    "NashEquilibrium.IsWeaklyAcyclic"
+    "NashEquilibrium.IsWeaklyAcyclic",
+    "NashEquilibrium.MixedProfile",
+    "NashEquilibrium.IsMixedProfile",
+    "NashEquilibrium.opponentWeight",
+    "NashEquilibrium.pureDeviationPayoff",
+    "NashEquilibrium.mixedPayoff",
+    "NashEquilibrium.IsMixedNash"
   ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": true

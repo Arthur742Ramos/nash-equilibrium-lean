@@ -33,8 +33,15 @@ imports = [
     for line in challenge_text.splitlines()
     if line.startswith("import ")
 ]
-if imports != ["Mathlib.Data.Finset.Max", "Mathlib.Data.Fintype.Pi"]:
-    raise SystemExit(f"error: Challenge.lean must have the two direct Mathlib imports: {imports}")
+if imports != [
+    "Mathlib.Data.Finset.Max",
+    "Mathlib.Data.Fintype.Pi",
+    "Mathlib.Algebra.BigOperators.GroupWithZero.Finset",
+    "Mathlib.Algebra.Order.BigOperators.Group.Finset",
+    "Mathlib.Data.Real.Basic",
+    "Mathlib.Tactic",
+]:
+    raise SystemExit(f"error: Challenge.lean has an unexpected direct Mathlib import list: {imports}")
 
 try:
     comparator = json.loads((root / "comparator.json").read_text(encoding="utf-8"))
@@ -53,6 +60,7 @@ if comparator["theorem_names"] != [
     "NashEquilibrium.Palomar.isNash_iff_potential_local_maximum",
     "NashEquilibrium.Palomar.no_betterResponse_cycle_of_generalized_ordinal_potential",
     "NashEquilibrium.Palomar.weaklyAcyclic_of_generalized_ordinal_potential",
+    "NashEquilibrium.Palomar.mixedNash_support_payoff_eq",
 ]:
     raise SystemExit("error: comparator surface must select the revised potential theorem bundle")
 if comparator.get("enable_nanoda") is not True:
