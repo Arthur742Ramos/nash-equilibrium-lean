@@ -33,8 +33,8 @@ imports = [
     for line in challenge_text.splitlines()
     if line.startswith("import ")
 ]
-if imports != ["Mathlib.Data.Finset.Max"]:
-    raise SystemExit(f"error: Challenge.lean must have one direct Mathlib import: {imports}")
+if imports != ["Mathlib.Data.Finset.Max", "Mathlib.Data.Fintype.Pi"]:
+    raise SystemExit(f"error: Challenge.lean must have the two direct Mathlib imports: {imports}")
 
 try:
     comparator = json.loads((root / "comparator.json").read_text(encoding="utf-8"))
@@ -49,9 +49,12 @@ if comparator["challenge_module"] != "Challenge":
 if comparator["solution_module"] != "Solution":
     raise SystemExit("error: comparator.json must use Solution as its proof module")
 if comparator["theorem_names"] != [
-    "NashEquilibrium.Palomar.exists_nash_of_ordinal_potential"
+    "NashEquilibrium.Palomar.exists_nash_maximizing_ordinal_potential",
+    "NashEquilibrium.Palomar.isNash_iff_potential_local_maximum",
+    "NashEquilibrium.Palomar.no_betterResponse_cycle_of_generalized_ordinal_potential",
+    "NashEquilibrium.Palomar.weaklyAcyclic_of_generalized_ordinal_potential",
 ]:
-    raise SystemExit("error: comparator surface must select the Nash existence theorem")
+    raise SystemExit("error: comparator surface must select the revised potential theorem bundle")
 if comparator.get("enable_nanoda") is not True:
     raise SystemExit("error: comparator.json must enable NanoDa")
 if not set(comparator["permitted_axioms"]) <= {

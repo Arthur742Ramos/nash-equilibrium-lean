@@ -74,6 +74,44 @@ theorem prisonersDilemma_defect_defect_nash :
   intro p
   simpa [defectProfile] using prisonersDilemma_defect_is_dominant p
 
+/-!
+The next example records the terminology boundary explicitly.  With constant
+payoffs, the generalized condition is vacuous, so a potential may still rise
+on a payoff-neutral move.  The standard bidirectional condition rejects this
+same potential.
+-/
+
+def neutralDeviationGame : Game Bool Bool Int where
+  strategies := fun _ => Finset.univ
+  payoff := fun _ _ => 0
+  nonempty_strategies := by
+    intro p
+    exact Finset.univ_nonempty
+
+def neutralDeviationPotential : Profile Bool Bool → Bool := fun s => s false
+
+def neutralBase : Profile Bool Bool := fun _ => false
+
+theorem neutralDeviationGame_is_generalized :
+    IsGeneralizedOrdinalPotential neutralDeviationGame neutralDeviationPotential := by
+  intro s p a hs ha himprove
+  simp [neutralDeviationGame] at himprove
+
+theorem neutralDeviationPotential_not_standard :
+    ¬ IsOrdinalPotential neutralDeviationGame neutralDeviationPotential := by
+  intro hstandard
+  have hpotential :
+      neutralDeviationPotential neutralBase <
+        neutralDeviationPotential (deviation neutralBase false true) := by
+    simp [neutralDeviationPotential, neutralBase, deviation]
+  have himprove :
+      neutralDeviationGame.payoff false neutralBase <
+        neutralDeviationGame.payoff false (deviation neutralBase false true) :=
+    (hstandard (s := neutralBase) (p := false) (a := true)
+      (by intro p; simp [neutralDeviationGame, neutralBase])
+      (by simp [neutralDeviationGame])).mpr hpotential
+  simp [neutralDeviationGame] at himprove
+
 /-! The following equivalence makes the four pure profiles explicit. -/
 
 def boolProfileEquiv : (Bool → Bool) ≃ Bool × Bool where

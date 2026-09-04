@@ -2,14 +2,22 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "NashEquilibrium.Palomar.exists_nash_of_ordinal_potential"
+    "NashEquilibrium.Palomar.exists_nash_maximizing_ordinal_potential",
+    "NashEquilibrium.Palomar.isNash_iff_potential_local_maximum",
+    "NashEquilibrium.Palomar.no_betterResponse_cycle_of_generalized_ordinal_potential",
+    "NashEquilibrium.Palomar.weaklyAcyclic_of_generalized_ordinal_potential"
   ],
   "definition_names": [
     "NashEquilibrium.Profile",
     "NashEquilibrium.IsProfile",
     "NashEquilibrium.deviation",
     "NashEquilibrium.IsNash",
-    "NashEquilibrium.IsOrdinalPotential"
+    "NashEquilibrium.IsGeneralizedOrdinalPotential",
+    "NashEquilibrium.IsOrdinalPotential",
+    "NashEquilibrium.IsPotentialMaximizer",
+    "NashEquilibrium.IsBetterResponseStep",
+    "NashEquilibrium.IsPotentialLocalMaximum",
+    "NashEquilibrium.IsWeaklyAcyclic"
   ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": true

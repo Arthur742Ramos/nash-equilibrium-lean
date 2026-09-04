@@ -1,3 +1,6 @@
 import Solution
 
-#print axioms NashEquilibrium.Palomar.exists_nash_of_ordinal_potential
+#print axioms NashEquilibrium.Palomar.exists_nash_maximizing_ordinal_potential
+#print axioms NashEquilibrium.Palomar.isNash_iff_potential_local_maximum
+#print axioms NashEquilibrium.Palomar.no_betterResponse_cycle_of_generalized_ordinal_potential
+#print axioms NashEquilibrium.Palomar.weaklyAcyclic_of_generalized_ordinal_potential
