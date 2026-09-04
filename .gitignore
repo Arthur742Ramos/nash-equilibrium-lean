@@ -1,0 +1,8 @@
+.lake/
+.cache/
+build/
+*.olean
+*.ilean
+*.c
+*.setup.json
+.DS_Store

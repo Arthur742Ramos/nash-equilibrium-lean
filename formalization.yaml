@@ -1,0 +1,124 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Native Lean finite Nash equilibria"
+  description: >-
+    Formalizes finite strategic-form games with player-specific finite move
+    sets, pure profiles, unilateral deviations, best responses, dominant
+    strategies, and ordinal-potential games. The principal theorem proves
+    that every finite ordinal-potential game has a pure Nash equilibrium by
+    maximizing its potential. The development also gives checked
+    Prisoner's-Dilemma and matching-pennies examples, including the uniform
+    mixed equilibrium for matching pennies.
+  authors:
+    - "Arthur Freitas Ramos"
+  license: "BSD-3-Clause"
+  responsible_maintainers:
+    - "Arthur Freitas Ramos"
+
+classification:
+  arxiv: ["math.LO", "cs.LO"]
+  msc2020: ["91A10"]
+
+sources:
+  - title: "Nash Equilibria for Finite Games in Isabelle/HOL"
+    authors:
+      - "Arthur Freitas Ramos"
+      - "David Barros Hulak"
+      - "Ruy Jose Guerra Barretto de Queiroz"
+    id: "https://isa-afp.org/entries/Nash_Equilibrium.html"
+    type: "website"
+    location: "https://isa-afp.org/entries/Nash_Equilibrium.html"
+    relationship: "adapts"
+    note: >-
+      The AFP formalization is the cited Isabelle development. This repository
+      is a separate Lean-native implementation and is not a file-level
+      translation.
+    license: "BSD"
+    author_endorsement: "not-contacted"
+
+related_formalizations:
+  - id: "https://isa-afp.org/entries/Nash_Equilibrium.html"
+    relationship: "adapts"
+    note: >-
+      Reuses the mathematical scope while changing the definitions, proof
+      architecture, and theorem-prover library.
+
+status:
+  scope: >-
+    The principal checked result is existence of a pure Nash equilibrium in
+    every finite ordinal-potential game with finite player and move types and
+    nonempty player strategy sets. The library also defines mixed profiles and
+    finite expected payoffs and proves the uniform mixed equilibrium of
+    matching pennies. It does not currently claim a general mixed-Nash
+    existence theorem via Brouwer.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Quot.sound", "Classical.choice"]
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["GPT-5 Codex"]
+      framework: "Lean 4 and Mathlib"
+      tool_setup: "Pinned Lean/Mathlib builds, closure-safe Challenge compilation, and Comparator-ready metadata."
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: "The final definitions, statements, and proofs are checked by Lean's kernel."
+  spend_usd: "subscription-based"
+  notes: "AI assistance was used for proof engineering. The final definitions, statements, and proofs are checked by Lean's kernel."
+
+fidelity:
+  divergences: >-
+    The Lean development uses a native Game structure, finite move sets,
+    function-update deviations, a finite maximum over legal profiles, and
+    explicit finite sums for the mixed layer. The mixed layer currently
+    formalizes the definitions and concrete matching-pennies equilibrium; it
+    does not reproduce the Isabelle Brouwer-based general existence proof.
+    The repository is an independent Lean-native companion, not a file-level
+    translation.
+
+review:
+  status: "self-assessed"
+  reviewers:
+    - "none"
+  notes: >-
+    The implementation library and Solution are proof-hole-free under the
+    pinned local build. Challenge contains one deliberate Palomar statement
+    hole. Hosted Comparator verification, Palomar editorial review, and
+    registration are separate states and are not inferred from local
+    compilation.
+
+alignment:
+  namespace: "NashEquilibrium.Palomar"
+  statements:
+    - source: "Finite ordinal-potential equilibrium existence"
+      lean: "NashEquilibrium.Palomar.exists_nash_of_ordinal_potential"
+      module: "Solution.lean"
+      status: "proved"
+      note: >-
+        A finite game with nonempty player strategy sets and an ordinal
+        potential has a pure Nash equilibrium.
+    - source: "Pure Nash equilibrium"
+      lean: "NashEquilibrium.IsNash"
+      module: "NashEquilibrium/Basic.lean"
+      status: "defined"
+      note: "No legal unilateral deviation improves the deviating player's payoff."
+    - source: "Finite mixed profiles"
+      lean: "NashEquilibrium.IsMixedProfile"
+      module: "NashEquilibrium/Mixed.lean"
+      status: "defined"
+      note: "Nonnegative finite probability weights sum to one per player."
+    - source: "Matching-pennies mixed equilibrium"
+      lean: "NashEquilibrium.matchingPennies_uniform_mixed_nash"
+      module: "NashEquilibrium/Examples.lean"
+      status: "proved"
+      note: "The uniform profile is a mixed equilibrium under finite enumeration."
+
+acknowledgements: >-
+  Mathlib contributors; the Archive of Formal Proofs authors of the cited
+  Nash-equilibrium development; and the Palomar Registry project for the
+  statement/solution Comparator workflow.
