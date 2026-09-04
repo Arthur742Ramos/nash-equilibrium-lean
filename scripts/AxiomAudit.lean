@@ -1,7 +1,11 @@
 import Solution
+import NashEquilibrium.MixedBrouwer
 
 #print axioms NashEquilibrium.Palomar.exists_nash_maximizing_ordinal_potential
 #print axioms NashEquilibrium.Palomar.isNash_iff_potential_local_maximum
 #print axioms NashEquilibrium.Palomar.no_betterResponse_cycle_of_generalized_ordinal_potential
 #print axioms NashEquilibrium.Palomar.weaklyAcyclic_of_generalized_ordinal_potential
 #print axioms NashEquilibrium.Palomar.mixedNash_support_payoff_eq
+#print axioms Brouwer_Product
+#print axioms NashEquilibrium.exists_nashMap_fixedPoint
+#print axioms NashEquilibrium.exists_mixedNash

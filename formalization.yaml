@@ -16,7 +16,9 @@ project:
     Prisoner's-Dilemma/coordination/matching-pennies/rock-paper-scissors
     examples. Its native mixed layer proves support equalization, Dirac
     transport, the normalized excess-map reduction, and the closed/compact/
-    convex/continuous finite mixed-profile geometry.
+    convex/continuous finite mixed-profile geometry. It also proves general
+    finite mixed-Nash existence by connecting the native excess map to a
+    kernel-checked product-of-simplices Brouwer theorem.
   authors:
     - "Arthur Freitas Ramos"
   license: "BSD-3-Clause"
@@ -134,6 +136,20 @@ sources:
       stronger structural theorem bundle described below.
     license: "BSD"
     author_endorsement: "not-contacted"
+  - title: "Formalizing Scarf, Brouwer, and Nash in Lean"
+    authors:
+      - "Yuwei Lyu"
+      - "Kai Li"
+    id: "https://arxiv.org/abs/2607.05987"
+    type: "article"
+    location: "https://arxiv.org/abs/2607.05987"
+    relationship: "comparative formalization"
+    note: >-
+      Provides the Scarf-to-Brouwer development, the product-of-simplices
+      fixed-point theorem, and a Nash endpoint in Lean 4. The present
+      repository includes the relevant fixed-point source with MIT attribution
+      and adds a native bridge to its own finite mixed-game representation.
+    author_endorsement: "not-contacted"
 
 related_formalizations:
   - id: "https://isa-afp.org/entries/Nash_Equilibrium.html"
@@ -143,8 +159,9 @@ related_formalizations:
       The Lean development changes the definitions and proof architecture,
       separates generalized from standard ordinal potentials, and adds the
       explicit improvement-path interface. The current mixed layer also
-      formalizes the finite support/Dirac and analytic setup, but leaves the
-      final Brouwer theorem as an explicit dependency boundary.
+      formalizes the finite support/Dirac and analytic setup and proves the
+      final mixed-Nash existence theorem through an attributed
+      product-simplex Brouwer development.
   - id: "https://doi.org/10.6092/issn.1972-5787/7235"
     relationship: "comparative formalization"
     note: >-
@@ -156,6 +173,13 @@ related_formalizations:
     note: >-
       Prior Coq and Isabelle formalization work on Nash-equilibrium existence;
       cited to make the formalization lineage explicit.
+  - id: "https://github.com/math-xmum/Brouwer"
+    relationship: "comparative formalization"
+    note: >-
+      The MIT-licensed source repository for the Scarf, Brouwer, and
+      product-simplex fixed-point theories included under Gametheory/. The
+      upstream source is retained with an exact commit and license notice;
+      this project contributes the MixedGame/MixedProfile bridge.
 
 status:
   scope: >-
@@ -171,9 +195,10 @@ status:
     generalized potentials may ascend on neutral deviations, so the two
     notions are not conflated. The library also defines mixed profiles and
     finite expected payoffs, proves support equalization and Dirac transport,
-    and supplies the normalized excess-map and finite mixed-profile topology
-    needed before a fixed-point theorem. It does not claim a general
-    mixed-Nash existence theorem via Brouwer.
+    and supplies the normalized excess-map and finite mixed-profile topology.
+    The native bridge then applies the included product-simplex Brouwer
+    theorem, yielding a mixed Nash equilibrium for every finite game with a
+    nonempty move type; the empty-player case is discharged directly.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: ["propext", "Quot.sound", "Classical.choice"]
@@ -202,9 +227,10 @@ fidelity:
     mixed layer formalizes native finite expected payoffs, support and Dirac
     lemmas, the normalized excess-map reduction, concrete matching pennies and
     rock-paper-scissors equilibria, and the closed/compact/convex continuous
-    mixed-profile setup. It does not reproduce the Isabelle Brouwer-based
-    final existence proof. The repository is an independent Lean-native
-    companion, not a file-level translation.
+    mixed-profile setup. The final existence theorem uses the included,
+    attributed Scarf/Brouwer fixed-point source and contributes a native
+    arbitrary-finite-type bridge; it is not a file-level translation of the
+    Isabelle entry.
 
 review:
   status: "self-assessed"
@@ -213,9 +239,10 @@ review:
   notes: >-
     The implementation library and Solution are proof-hole-free under the
     pinned local build. Challenge contains one deliberate Palomar statement
-    hole. Hosted Comparator verification, Palomar editorial review, and
-    registration are separate states and are not inferred from local
-    compilation.
+    hole. The fixed-point core is included under the MIT notice in
+    THIRD_PARTY_NOTICES.md and builds without proof placeholders. Hosted
+    Comparator verification, Palomar editorial review, and registration are
+    separate states and are not inferred from local compilation.
 
 alignment:
   namespace: "NashEquilibrium.Palomar"
@@ -301,10 +328,34 @@ alignment:
       status: "proved"
       note: >-
         Any fixed point supplied for the normalized excess map yields a mixed
-        Nash equilibrium; a Brouwer theorem is the remaining external
-        analytic dependency.
+        Nash equilibrium.
+    - source: "Product-simplex Brouwer fixed point"
+      lean: "Brouwer_Product"
+      module: "Gametheory/Brouwer_product.lean"
+      status: "proved"
+      note: >-
+        A continuous self-map of a finite product of standard simplices has a
+        fixed point. The included source is attributed to the MIT-licensed
+        Scarf/Brouwer Lean development.
+    - source: "Normalized excess-map fixed point"
+      lean: "NashEquilibrium.exists_nashMap_fixedPoint"
+      module: "NashEquilibrium/MixedBrouwer.lean"
+      status: "proved"
+      note: >-
+        The native mixed-profile map has a fixed point for every finite game
+        with a nonempty move type; the proof reindexes finite types and uses
+        the product-simplex Brouwer theorem.
+    - source: "General finite mixed-Nash existence"
+      lean: "NashEquilibrium.exists_mixedNash"
+      module: "NashEquilibrium/MixedBrouwer.lean"
+      status: "proved"
+      note: >-
+        Reindexes arbitrary finite player and move types, applies the
+        product-simplex Brouwer theorem to the normalized excess map, and
+        converts the resulting fixed point into a mixed Nash equilibrium.
 
 acknowledgements: >-
-  Mathlib contributors; the Archive of Formal Proofs authors of the cited
+  Mathlib contributors; Yuwei Lyu and Kai Li for the attributed Scarf/Brouwer
+  fixed-point source; the Archive of Formal Proofs authors of the cited
   Nash-equilibrium development; and the Palomar Registry project for the
   statement/solution Comparator workflow.

@@ -29,7 +29,10 @@ It proves support equalization, zero probability for strictly suboptimal
 moves, Dirac transport from pure Nash profiles, the normalized excess-map
 construction, and the fixed-point-to-mixed-Nash reduction.  A companion
 topology module proves that the mixed-profile set is closed, compact, convex,
-and nonempty and that the payoff/excess/map operations are continuous.
+and nonempty and that the payoff/excess/map operations are continuous.  The
+repository now also proves the full finite mixed-Nash existence theorem: a
+kernel-checked Scarf/Brouwer product-of-simplices development is connected to
+the native `MixedGame` representation by `NashEquilibrium.MixedBrouwer`.
 Prisoner's Dilemma has a dominant defection profile, matching pennies has no
 pure equilibrium and a uniform mixed equilibrium, coordination has two pure
 equilibria, and rock-paper-scissors has a uniform mixed equilibrium.
@@ -89,28 +92,33 @@ closest directly comparable formalization literature for potential games is
 which covers potential games and best-response dynamics. The companion
 [Isabelle/AFP entry](https://isa-afp.org/entries/Nash_Equilibrium.html) covers
 finite pure and mixed Nash equilibria, including a Brouwer-based general mixed
-existence theorem. This Lean repository is an independent, narrower companion:
-it does not claim a file-level translation or reproduce that mixed theorem, and
-it makes the potential terminology and improvement-path certificate explicit.
+existence theorem. The fixed-point layer used here is the independently
+published Lean development [*Formalizing Scarf, Brouwer, and Nash in
+Lean*](https://arxiv.org/abs/2607.05987), whose source is preserved with
+attribution in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). This repository
+adds the native bridge to its own mixed-game definitions; it does not claim
+priority for the Scarf/Brouwer proof or a file-level translation of the AFP
+entry.
 
 ## Relationship to the Isabelle/AFP entry
 
 The mathematical scope is informed by the published AFP entry
 [Nash Equilibria for Finite Games in Isabelle/HOL](https://isa-afp.org/entries/Nash_Equilibrium.html).
 The Lean development changes the definitions and proof architecture. It now
-matches the AFP entry's elementary mixed-strategy infrastructure through
-support/Dirac lemmas and the analytic fixed-point setup, while retaining a
-different native profile representation. In particular, it does not silently call the one-way improvement implication
+matches the AFP entry's finite mixed-strategy existence result at the theorem
+level through support/Dirac lemmas, the normalized excess map, and a
+kernel-checked product-simplex Brouwer theorem, while retaining a different
+native profile representation. In particular, it does not silently call the one-way improvement implication
 "ordinal"; it names that class generalized and reserves the standard name for
-the bidirectional condition. The Isabelle Brouwer-based final general
-mixed-Nash existence theorem remains outside this repository's claim because
-the pinned Mathlib dependency does not provide a Brouwer fixed-point theorem;
-the missing theorem is stated as an explicit dependency boundary rather than
-replaced by an axiom or proof placeholder.
+the bidirectional condition. The Scarf/Brouwer core is included as an
+attributed third-party dependency, and `NashEquilibrium.MixedBrouwer` supplies
+the Lean-native reindexing and payoff-map bridge. The empty-player edge case is
+handled directly, so the exported theorem covers every finite game with a
+nonempty move type.
 
 ## Status
 
-The artifact is prepared for local Palomar checks. Local compilation is not a
-claim of hosted Comparator verification, editorial review, or registration.
-Those states require a public pinned commit and the corresponding Palomar
-workflow.
+The mixed-Nash existence layer builds successfully under the pinned Lean and
+Mathlib versions and has an explicit third-party license/attribution record.
+Palomar Comparator verification, editorial review, and registration remain
+separate states and are not inferred from local compilation.
