@@ -125,7 +125,9 @@ abort "error: project.name is missing" unless project["name"].is_a?(String) && !
 abort "error: project.description is missing" unless project["description"].is_a?(String) && !project["description"].strip.empty?
 abort "error: project.authors is empty" unless project["authors"].is_a?(Array) && !project["authors"].empty?
 abort "error: project.responsible_maintainers is empty" unless project["responsible_maintainers"].is_a?(Array) && !project["responsible_maintainers"].empty?
-abort "error: project.license must describe BSD and MIT components" unless project["license"] == "BSD-3-Clause AND MIT"
+abort "error: project.license must match the root LICENSE" unless project["license"] == "BSD-3-Clause"
+notices_path = File.join(File.dirname(path), "THIRD_PARTY_NOTICES.md")
+abort "error: third-party MIT notice is missing" unless File.file?(notices_path) && File.read(notices_path).include?("MIT License")
 classification = data["classification"]
 abort "error: classification is incomplete" unless classification.is_a?(Hash) && classification["arxiv"].is_a?(Array) && classification["msc2020"].is_a?(Array)
 sources = data["sources"]

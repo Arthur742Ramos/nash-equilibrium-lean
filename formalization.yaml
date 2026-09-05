@@ -23,7 +23,7 @@ project:
     new mathematics or the first Lean proof of Nash existence.
   authors:
     - "Arthur Freitas Ramos"
-  license: "BSD-3-Clause AND MIT"
+  license: "BSD-3-Clause"
   responsible_maintainers:
     - "Arthur Freitas Ramos"
 
