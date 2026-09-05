@@ -38,10 +38,11 @@ sources:
     id: "https://doi.org/10.1073/pnas.36.1.48"
     type: "article"
     location: "https://doi.org/10.1073/pnas.36.1.48"
-    relationship: "foundational"
+    relationship: "formalizes"
     note: >-
-      Introduces the equilibrium concept for finite n-person games and the
-      mixed-strategy existence argument via a fixed-point theorem.
+      The Lean development formalizes the finite mixed-equilibrium existence
+      result and equilibrium concept introduced here, with an explicit
+      restriction to a common finite nonempty move type.
     author_endorsement: "not-contacted"
   - title: "Non-cooperative Games"
     authors:
@@ -49,10 +50,10 @@ sources:
     id: "https://doi.org/10.2307/1969529"
     type: "article"
     location: "https://doi.org/10.2307/1969529"
-    relationship: "foundational"
+    relationship: "background"
     note: >-
       Expanded foundational treatment of non-cooperative games and mixed
-      equilibrium existence.
+      equilibrium existence; cited as background for the formalized result.
     author_endorsement: "not-contacted"
   - title: "Potential Games"
     authors:
@@ -61,12 +62,11 @@ sources:
     id: "https://doi.org/10.1006/game.1996.0044"
     type: "article"
     location: "https://www.sciencedirect.com/science/article/pii/S0899825696900445"
-    relationship: "foundational"
+    relationship: "formalizes"
     note: >-
-      Introduces and studies exact and ordinal potential functions for
-      strategic-form games. The standard ordinal notion is the strict-sign
-      equivalence used by the selected Lean theorem; the weaker one-way
-      implication is tracked here as generalized.
+      The Lean development formalizes the standard ordinal-potential
+      definitions and finite equilibrium consequences used here. The weaker
+      one-way implication is tracked separately as generalized.
     author_endorsement: "not-contacted"
   - title: "A class of games possessing pure-strategy Nash equilibria"
     authors:
@@ -74,7 +74,7 @@ sources:
     id: "https://doi.org/10.1007/BF01737559"
     type: "article"
     location: "https://doi.org/10.1007/BF01737559"
-    relationship: "foundational"
+    relationship: "background"
     note: >-
       Foundational precursor on congestion games and pure-strategy existence
       through a potential construction.
@@ -88,7 +88,7 @@ sources:
     id: "https://doi.org/10.1287/moor.1110.0500"
     type: "article"
     location: "https://pubsonline.informs.org/doi/10.1287/moor.1110.0500"
-    relationship: "subsequent"
+    relationship: "background"
     note: >-
       Places potential games in a flow/decomposition framework and provides
       subsequent structural context for the potential component.
@@ -101,7 +101,7 @@ sources:
     id: "https://doi.org/10.4204/EPTCS.256.4"
     type: "inproceedings"
     location: "https://doi.org/10.4204/EPTCS.256.4"
-    relationship: "subsequent formalization"
+    relationship: "background"
     note: >-
       A directly relevant formalization study of a Nash-equilibrium existence
       theorem in both Coq and Isabelle.
@@ -114,7 +114,7 @@ sources:
     id: "https://doi.org/10.6092/issn.1972-5787/7235"
     type: "article"
     location: "https://jfr.unibo.it/article/view/7235"
-    relationship: "comparative formalization"
+    relationship: "background"
     note: >-
       A directly relevant Coq/Ssreflect formalization of potential games,
       pure and mixed Nash equilibria, and best-response dynamics. The present
@@ -129,7 +129,7 @@ sources:
     id: "https://isa-afp.org/entries/Nash_Equilibrium.html"
     type: "website"
     location: "https://isa-afp.org/entries/Nash_Equilibrium.html"
-    relationship: "comparative formalization"
+    relationship: "background"
     note: >-
       The AFP entry is the prior Isabelle formalization of finite pure and
       mixed Nash equilibria. This repository is a separate Lean-native
@@ -146,12 +146,12 @@ sources:
     id: "https://arxiv.org/abs/2607.05987"
     type: "article"
     location: "https://arxiv.org/abs/2607.05987"
-    relationship: "comparative formalization"
+    relationship: "adapts"
     note: >-
       Provides the Scarf-to-Brouwer development, the product-of-simplices
       fixed-point theorem, and a Nash endpoint in Lean 4. The present
-      repository includes the relevant fixed-point source with MIT attribution
-      and adds a native bridge to its own finite mixed-game representation.
+      repository adapts the relevant fixed-point source to its native mixed
+      game representation, with MIT attribution and an exact source pin.
     author_endorsement: "not-contacted"
 
 related_formalizations:

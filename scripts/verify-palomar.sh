@@ -128,7 +128,16 @@ abort "error: project.responsible_maintainers is empty" unless project["responsi
 abort "error: project.license must describe BSD and MIT components" unless project["license"] == "BSD-3-Clause AND MIT"
 classification = data["classification"]
 abort "error: classification is incomplete" unless classification.is_a?(Hash) && classification["arxiv"].is_a?(Array) && classification["msc2020"].is_a?(Array)
-abort "error: sources must cite the AFP entry" unless data["sources"].is_a?(Array) && data["sources"].any? { |source| source["id"] == "https://isa-afp.org/entries/Nash_Equilibrium.html" }
+sources = data["sources"]
+abort "error: sources must be a nonempty array" unless sources.is_a?(Array) && !sources.empty?
+valid_source_relationships = %w[formalizes adapts independently-proves background other]
+invalid_relationships = sources.map { |source| source["relationship"] }
+  .reject { |relationship| valid_source_relationships.include?(relationship) }
+  .uniq
+abort "error: sources contain invalid relationships: #{invalid_relationships.join(', ')}" unless invalid_relationships.empty?
+source_based_relationships = %w[formalizes adapts independently-proves]
+abort "error: source-based results need a formalizes, adapts, or independently-proves source" unless sources.any? { |source| source_based_relationships.include?(source["relationship"]) }
+abort "error: sources must cite the AFP entry" unless sources.any? { |source| source["id"] == "https://isa-afp.org/entries/Nash_Equilibrium.html" }
 abort "error: automation metadata is incomplete" unless data["automation"].is_a?(Hash) && data["automation"]["methods"].is_a?(Array) && !data["automation"]["methods"].empty?
 abort "error: review metadata is incomplete" unless data["review"].is_a?(Hash) && data["review"]["status"].is_a?(String)
 puts "formalization.yaml shape passed."
