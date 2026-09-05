@@ -1,5 +1,6 @@
 import NashEquilibrium.Basic
 import NashEquilibrium.Mixed
+import NashEquilibrium.MixedBrouwer
 
 namespace NashEquilibrium.Palomar
 
@@ -54,5 +55,9 @@ theorem mixedNash_support_payoff_eq
     (h : IsMixedNash G m) {p : Player} {a : Move} (ha : 0 < m p a) :
     pureDeviationPayoff G m p a = mixedPayoff G m p := by
   exact NashEquilibrium.mixedNash_support_payoff_eq h ha
+
+theorem exists_mixedNash [Nonempty Move] (G : MixedGame Player Move) :
+    ∃ m : MixedProfile Player Move, IsMixedNash G m := by
+  exact NashEquilibrium.exists_mixedNash G
 
 end NashEquilibrium.Palomar

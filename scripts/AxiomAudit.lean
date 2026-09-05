@@ -9,3 +9,4 @@ import NashEquilibrium.MixedBrouwer
 #print axioms Brouwer_Product
 #print axioms NashEquilibrium.exists_nashMap_fixedPoint
 #print axioms NashEquilibrium.exists_mixedNash
+#print axioms NashEquilibrium.Palomar.exists_mixedNash

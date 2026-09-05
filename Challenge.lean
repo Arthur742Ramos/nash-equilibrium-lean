@@ -299,6 +299,11 @@ theorem mixedNash_support_payoff_eq
     exact (mul_eq_zero.mp hterm).resolve_left (ne_of_gt ha)
   linarith
 
+/-- Every finite real-payoff game on a common nonempty move type has a mixed equilibrium. -/
+theorem exists_mixedNash [Nonempty Move] (G : MixedGame Player Move) :
+    ∃ m : MixedProfile Player Move, IsMixedNash G m := by
+  sorry
+
 end Palomar
 
 end NashEquilibrium

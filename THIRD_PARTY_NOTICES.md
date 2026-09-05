@@ -2,7 +2,7 @@
 
 The files under `Gametheory/` are included from the Lean development
 [Formalizing Scarf, Brouwer, and Nash in Lean](https://github.com/math-xmum/Brouwer),
-commit `09941e849a81e520cc0cc53220f10f8e5f4768e`.
+commit `09941e849a81e520cc0cc53220f10f8e5f4768e0`.
 
 The included files are `Scarf.lean`, `ScarfPath.lean`, `Brouwer.lean`, and
 `Brouwer_product.lean`. They provide the kernel-checked Scarf-to-Brouwer and

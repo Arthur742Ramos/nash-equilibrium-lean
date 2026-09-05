@@ -17,11 +17,13 @@ project:
     examples. Its native mixed layer proves support equalization, Dirac
     transport, the normalized excess-map reduction, and the closed/compact/
     convex/continuous finite mixed-profile geometry. It also proves general
-    finite mixed-Nash existence by connecting the native excess map to a
-    kernel-checked product-of-simplices Brouwer theorem.
+    finite mixed-Nash existence on a common nonempty move type by connecting
+    the native excess map to an attributed, kernel-checked product-of-simplices
+    Brouwer theorem. This is a reusable formalization artifact, not a claim of
+    new mathematics or the first Lean proof of Nash existence.
   authors:
     - "Arthur Freitas Ramos"
-  license: "BSD-3-Clause"
+  license: "BSD-3-Clause AND MIT"
   responsible_maintainers:
     - "Arthur Freitas Ramos"
 
@@ -116,8 +118,8 @@ sources:
     note: >-
       A directly relevant Coq/Ssreflect formalization of potential games,
       pure and mixed Nash equilibria, and best-response dynamics. The present
-      repository is an independent Lean-native comparison with a narrower,
-      explicitly audited pure-potential surface.
+      repository provides a Lean-native interface and an explicitly audited
+      pure-potential and mixed-equilibrium surface, without a novelty claim.
     author_endorsement: "not-contacted"
   - title: "Nash Equilibria for Finite Games in Isabelle/HOL"
     authors:
@@ -133,7 +135,8 @@ sources:
       mixed Nash equilibria. This repository is a separate Lean-native
       implementation and is not a file-level translation; it makes the
       generalized/standard potential distinction explicit and selects the
-      stronger structural theorem bundle described below.
+      structural theorem bundle described below. COMPARISON.md records the
+      scoped correspondence rather than claiming whole-library parity.
     license: "BSD"
     author_endorsement: "not-contacted"
   - title: "Formalizing Scarf, Brouwer, and Nash in Lean"
@@ -183,7 +186,7 @@ related_formalizations:
 
 status:
   scope: >-
-    The selected surface has three connected claims. First, every finite game
+    The selected surface contains six theorems. First, every finite game
     with a standard ordinal potential has a pure Nash profile that globally
     maximizes the potential. Second, under the same standard bidirectional
     condition, pure Nash profiles are exactly potential local maxima. Third,
@@ -193,12 +196,15 @@ status:
     so every legal starting profile reaches a pure Nash profile by some finite
     better-response path. A checked constant-payoff example demonstrates that
     generalized potentials may ascend on neutral deviations, so the two
-    notions are not conflated. The library also defines mixed profiles and
+    notions are not conflated. The fifth selected theorem proves mixed support
+    equalization, and the sixth proves mixed existence. The library defines mixed profiles and
     finite expected payoffs, proves support equalization and Dirac transport,
     and supplies the normalized excess-map and finite mixed-profile topology.
     The native bridge then applies the included product-simplex Brouwer
-    theorem, yielding a mixed Nash equilibrium for every finite game with a
-    nonempty move type; the empty-player case is discharged directly.
+    theorem, yielding a mixed Nash equilibrium for every finite real-payoff game
+    on a common nonempty move type, with every move available to every player;
+    the empty-player case is discharged directly. Player-specific legal-move
+    restrictions in the pure layer are not part of this mixed theorem.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: ["propext", "Quot.sound", "Classical.choice"]
@@ -238,11 +244,14 @@ review:
     - "none"
   notes: >-
     The implementation library and Solution are proof-hole-free under the
-    pinned local build. Challenge contains one deliberate Palomar statement
-    hole. The fixed-point core is included under the MIT notice in
+    pinned local build. Challenge contains two deliberate Palomar statement
+    holes, excluded from the implementation sorry_count. The fixed-point core is included under the MIT notice in
     THIRD_PARTY_NOTICES.md and builds without proof placeholders. Hosted
     Comparator verification, Palomar editorial review, and registration are
-    separate states and are not inferred from local compilation.
+    separate states and are not inferred from local compilation. This is a
+    reusable formalization artifact, not a claim of a new economic theorem or
+    first Lean proof of Nash existence. Research interest remains subject to
+    editorial assessment.
 
 alignment:
   namespace: "NashEquilibrium.Palomar"
@@ -346,13 +355,14 @@ alignment:
         with a nonempty move type; the proof reindexes finite types and uses
         the product-simplex Brouwer theorem.
     - source: "General finite mixed-Nash existence"
-      lean: "NashEquilibrium.exists_mixedNash"
-      module: "NashEquilibrium/MixedBrouwer.lean"
+      lean: "NashEquilibrium.Palomar.exists_mixedNash"
+      module: "Solution.lean"
       status: "proved"
       note: >-
         Reindexes arbitrary finite player and move types, applies the
         product-simplex Brouwer theorem to the normalized excess map, and
         converts the resulting fixed point into a mixed Nash equilibrium.
+        All players share the same nonempty move type and may use every move.
 
 acknowledgements: >-
   Mathlib contributors; Yuwei Lyu and Kai Li for the attributed Scarf/Brouwer

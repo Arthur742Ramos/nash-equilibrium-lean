@@ -6,7 +6,7 @@ cd "$repository_root"
 
 for required_file in \
   lean-toolchain lake-manifest.json formalization.yaml Challenge.lean Solution.lean \
-  comparator.json LICENSE; do
+  comparator.json LICENSE THIRD_PARTY_NOTICES.md; do
   if [ ! -f "$required_file" ] || [ -L "$required_file" ]; then
     echo "error: required Palomar file is missing or not regular: $required_file" >&2
     exit 1
@@ -61,8 +61,9 @@ if comparator["theorem_names"] != [
     "NashEquilibrium.Palomar.no_betterResponse_cycle_of_generalized_ordinal_potential",
     "NashEquilibrium.Palomar.weaklyAcyclic_of_generalized_ordinal_potential",
     "NashEquilibrium.Palomar.mixedNash_support_payoff_eq",
+    "NashEquilibrium.Palomar.exists_mixedNash",
 ]:
-    raise SystemExit("error: comparator surface must select the revised potential theorem bundle")
+    raise SystemExit("error: comparator surface must select the six pure/mixed theorems")
 if comparator.get("enable_nanoda") is not True:
     raise SystemExit("error: comparator.json must enable NanoDa")
 if not set(comparator["permitted_axioms"]) <= {
@@ -78,7 +79,8 @@ if re.search(r"(^|[^A-Za-z0-9_])(sorry|admit|oops)([^A-Za-z0-9_]|$)", solution):
 if re.search(r"^\s*(axiom|unsafe)\b", solution, re.MULTILINE):
     raise SystemExit("error: Solution.lean declares an axiom or unsafe definition")
 
-for path in sorted((root / "NashEquilibrium").glob("*.lean")):
+for path in sorted(p for directory in ("NashEquilibrium", "Gametheory")
+                   for p in (root / directory).rglob("*.lean")):
     text = path.read_text(encoding="utf-8")
     if re.search(r"(^|[^A-Za-z0-9_])(sorry|admit|oops)([^A-Za-z0-9_]|$)", text):
         raise SystemExit(f"error: proof placeholder found in {path.relative_to(root)}")
@@ -100,19 +102,17 @@ while IFS= read -r dependency; do
 done <<< "$challenge_dependencies"
 
 challenge_holes=$(grep -Ec '^[[:space:]]*sorry[[:space:]]*$' Challenge.lean || true)
-if [ "$challenge_holes" -ne 1 ]; then
-  echo "error: Challenge.lean must contain exactly one deliberate proof hole" >&2
+if [ "$challenge_holes" -ne 2 ]; then
+  echo "error: Challenge.lean must contain exactly two deliberate statement proof holes" >&2
   exit 1
 fi
 
 lake build
 lake env lean --src-deps Solution.lean >/dev/null
+python3 scripts/test-axiom-report.py
 axiom_report=$(lake env lean scripts/AxiomAudit.lean 2>&1)
 printf '%s\n' "$axiom_report"
-if printf '%s\n' "$axiom_report" | rg -n 'sorryAx|Lean\.ofReduceBool|(^|[[:space:]])axiom[[:space:]]'; then
-  echo "error: Solution depends on a forbidden proof mechanism" >&2
-  exit 1
-fi
+printf '%s\n' "$axiom_report" | python3 scripts/check-axiom-report.py comparator.json
 
 ruby -ryaml - "$repository_root/formalization.yaml" <<'RUBY'
 path = ARGV.fetch(0)
@@ -125,7 +125,7 @@ abort "error: project.name is missing" unless project["name"].is_a?(String) && !
 abort "error: project.description is missing" unless project["description"].is_a?(String) && !project["description"].strip.empty?
 abort "error: project.authors is empty" unless project["authors"].is_a?(Array) && !project["authors"].empty?
 abort "error: project.responsible_maintainers is empty" unless project["responsible_maintainers"].is_a?(Array) && !project["responsible_maintainers"].empty?
-abort "error: project.license must be BSD-3-Clause" unless project["license"] == "BSD-3-Clause"
+abort "error: project.license must describe BSD and MIT components" unless project["license"] == "BSD-3-Clause AND MIT"
 classification = data["classification"]
 abort "error: classification is incomplete" unless classification.is_a?(Hash) && classification["arxiv"].is_a?(Array) && classification["msc2020"].is_a?(Array)
 abort "error: sources must cite the AFP entry" unless data["sources"].is_a?(Array) && data["sources"].any? { |source| source["id"] == "https://isa-afp.org/entries/Nash_Equilibrium.html" }

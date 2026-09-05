@@ -7,7 +7,7 @@ potential notions. `IsGeneralizedOrdinalPotential` is the one-way condition
 that every strict payoff improvement raises the potential. `IsOrdinalPotential`
 is reserved for the standard bidirectional strict-sign equivalence.
 
-The selected theorem surface is a finite improvement-system certificate:
+The selected theorem surface combines finite improvement dynamics and mixed equilibria:
 
 - a standard ordinal potential has a pure Nash profile that globally maximizes
   the potential;
@@ -16,13 +16,21 @@ The selected theorem surface is a finite improvement-system certificate:
 - under the generalized condition, every nonempty better-response path strictly
   ascends the potential, so directed better-response cycles are impossible;
 - in fact, every legal starting profile reaches a pure Nash equilibrium by a
-  finite better-response path (weak acyclicity).
+  finite better-response path (weak acyclicity);
+- positive-probability moves at a mixed equilibrium have equal expected payoff;
+- every finite real-payoff game on a common nonempty move type has a mixed
+  Nash equilibrium.
 
 This is a formalization contribution about semantic precision and a reusable
 finite-dynamics interface, not a claim of a new economic theorem. A checked
 constant-payoff example demonstrates the terminology boundary: the generalized
 condition permits a strict potential rise on a payoff-neutral deviation, while
 the standard condition rejects it.
+
+The contribution is a reusable formalization artifact: explicit semantic
+boundaries, a native fixed-point adapter, and an independently replayable
+statement/solution interface. These features do not by themselves establish
+the research novelty required for a paper; that remains an editorial judgment.
 
 The library also contains a finite mixed-strategy layer and checked examples.
 It proves support equalization, zero probability for strictly suboptimal
@@ -47,13 +55,15 @@ The project pins Lean 4.33.0 and Mathlib v4.33.0. From the repository root:
 The package audit compiles the complete library, compiles the standalone
 Challenge and Solution surfaces, checks the Challenge import closure, audits
 the selected declarations' axioms, and validates the metadata and Comparator
-configuration. The pinned Comparator replay is available separately through
+configuration. Both native and vendored implementation files are scanned;
+the axiom audit fails on unapproved axioms, missing reports, and unrecognized
+output. The pinned Comparator replay is available separately through
 scripts/verify-comparator.sh.
 
 ## Palomar surface
 
 Challenge.lean is intentionally small and standalone. It contains the
-mathematical statement with one proof hole and imports only Mathlib. Solution.lean
+mathematical statements with two deliberate proof holes and imports only Mathlib. Solution.lean
 imports the native implementation and provides the checked proofs under the matching namespace
 NashEquilibrium.Palomar.
 
@@ -64,6 +74,7 @@ The selected declarations are:
     NashEquilibrium.Palomar.no_betterResponse_cycle_of_generalized_ordinal_potential
     NashEquilibrium.Palomar.weaklyAcyclic_of_generalized_ordinal_potential
     NashEquilibrium.Palomar.mixedNash_support_payoff_eq
+    NashEquilibrium.Palomar.exists_mixedNash
 
 The Comparator definition targets make the Game, profile, deviation, Nash,
 standard/generalized potential, maximizer, local-maximum, and better-response
@@ -104,17 +115,17 @@ entry.
 
 The mathematical scope is informed by the published AFP entry
 [Nash Equilibria for Finite Games in Isabelle/HOL](https://isa-afp.org/entries/Nash_Equilibrium.html).
-The Lean development changes the definitions and proof architecture. It now
-matches the AFP entry's finite mixed-strategy existence result at the theorem
-level through support/Dirac lemmas, the normalized excess map, and a
-kernel-checked product-simplex Brouwer theorem, while retaining a different
-native profile representation. In particular, it does not silently call the one-way improvement implication
-"ordinal"; it names that class generalized and reserves the standard name for
-the bidirectional condition. The Scarf/Brouwer core is included as an
-attributed third-party dependency, and `NashEquilibrium.MixedBrouwer` supplies
-the Lean-native reindexing and payoff-map bridge. The empty-player edge case is
-handled directly, so the exported theorem covers every finite game with a
-nonempty move type.
+The Lean development changes the definitions and proof architecture; it does
+not claim file-level or whole-library parity. See the scoped
+[theorem comparison](COMPARISON.md). The mixed existence theorem allows all
+moves in one common finite nonempty move type for every player. Unlike the pure
+`Game` layer, it does not incorporate player-specific legal-move sets, and no
+equivalence theorem between arbitrary restricted pure games and this mixed
+representation is claimed. Empty player types are handled directly.
+
+Native sources use BSD-3-Clause; the vendored fixed-point files use MIT.
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the exact upstream pin
+and license text.
 
 ## Status
 

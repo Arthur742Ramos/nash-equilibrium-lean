@@ -6,7 +6,8 @@
     "NashEquilibrium.Palomar.isNash_iff_potential_local_maximum",
     "NashEquilibrium.Palomar.no_betterResponse_cycle_of_generalized_ordinal_potential",
     "NashEquilibrium.Palomar.weaklyAcyclic_of_generalized_ordinal_potential",
-    "NashEquilibrium.Palomar.mixedNash_support_payoff_eq"
+    "NashEquilibrium.Palomar.mixedNash_support_payoff_eq",
+    "NashEquilibrium.Palomar.exists_mixedNash"
   ],
   "definition_names": [
     "NashEquilibrium.Profile",
