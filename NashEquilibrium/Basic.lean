@@ -51,12 +51,15 @@ theorem deviation_other {s : Profile Player Move} {p q : Player} {a : Move}
     (h : q ≠ p) : deviation s p a q = s q := by
   simp [deviation, h]
 
-/-- A profile is a pure Nash equilibrium when no legal unilateral deviation
-improves its deviating player's payoff. -/
+/-- A profile is a pure Nash equilibrium when no legal unilateral deviation is
+strictly better for its deviating player. This direct strict-improvement
+formulation remains correct for arbitrary utility preorders: an incomparable
+deviation is not itself a strict improvement. -/
 def IsNash [Preorder Utility] (G : Game Player Move Utility)
     (s : Profile Player Move) : Prop :=
   IsProfile G s ∧
-    ∀ p a, a ∈ G.strategies p → G.payoff p (deviation s p a) ≤ G.payoff p s
+    ∀ p a, a ∈ G.strategies p →
+      ¬ G.payoff p s < G.payoff p (deviation s p a)
 
 /-- `a` is a best response to the opponents' choices in `s`. -/
 def IsBestResponse [Preorder Utility] (G : Game Player Move Utility)
@@ -73,7 +76,7 @@ def IsDominant [Preorder Utility] (G : Game Player Move Utility)
     ∀ s, IsProfile G s → ∀ b, b ∈ G.strategies p →
       G.payoff p (deviation s p b) ≤ G.payoff p (deviation s p a)
 
-theorem isNash_iff_bestResponse [Preorder Utility]
+theorem isNash_iff_bestResponse [LinearOrder Utility]
     {G : Game Player Move Utility} {s : Profile Player Move}
     (hs : IsProfile G s) :
     IsNash G s ↔ ∀ p, IsBestResponse G s p (s p) := by
@@ -83,12 +86,16 @@ theorem isNash_iff_bestResponse [Preorder Utility]
     intro p
     refine ⟨hs p, ?_⟩
     intro a ha
-    simpa [deviation] using hNash p a ha
+    have hle : G.payoff p (deviation s p a) ≤ G.payoff p s :=
+      le_of_not_gt (hNash p a ha)
+    simpa [deviation] using hle
   · intro h
     refine ⟨hs, ?_⟩
-    intro p a ha
+    intro p a ha himprove
     have hp := h p
-    exact (hp.2 a ha).trans_eq (by simp [deviation])
+    have hle : G.payoff p (deviation s p a) ≤ G.payoff p s := by
+      simpa [deviation] using hp.2 a ha
+    exact (not_lt_of_ge hle) himprove
 
 theorem dominant_profile_isNash [Preorder Utility]
     (G : Game Player Move Utility) (dominant : Player → Move)
@@ -98,9 +105,12 @@ theorem dominant_profile_isNash [Preorder Utility]
     intro p
     exact (hdom p).1
   refine ⟨hprofile, ?_⟩
-  intro p a ha
+  intro p a ha himprove
   have h := (hdom p).2 (fun q => dominant q) hprofile a ha
-  simpa [deviation] using h
+  have hle : G.payoff p (deviation (fun q => dominant q) p a) ≤
+      G.payoff p (fun q => dominant q) := by
+    simpa [deviation] using h
+  exact (not_lt_of_ge hle) himprove
 
 /-- A legal unilateral deviation from a legal profile is again legal. -/
 theorem deviation_isProfile
@@ -280,10 +290,9 @@ theorem weaklyAcyclic_of_generalized_ordinal_potential
         by_contra hnone
         apply hs_nash
         refine ⟨hs, ?_⟩
-        intro p a ha
-        by_contra hnot
+        intro p a ha himprove
         apply hnone
-        exact ⟨p, a, ha, lt_of_not_ge hnot⟩
+        exact ⟨p, a, ha, himprove⟩
       rcases himprove_exists with ⟨p, a, ha, himprove⟩
       have hdeviation_profile : IsProfile G (deviation s p a) :=
         deviation_isProfile G hs ha
@@ -317,17 +326,14 @@ theorem isNash_iff_potential_local_maximum
     have himprove :
         G.payoff p s < G.payoff p (deviation s p a) :=
       (hpotential hs_profile ha).mpr hpotential_rises
-    exact (not_lt_of_ge (hs_nash p a ha)) himprove
+    exact (hs_nash p a ha) himprove
   · intro hs
     rcases hs with ⟨hs_profile, hs_local⟩
     refine ⟨hs_profile, ?_⟩
-    intro p a ha
-    by_contra hnot
-    have himprove :
-        G.payoff p s < G.payoff p (deviation s p a) := lt_of_not_ge hnot
+    intro p a ha hstrict
     have hpotential_rises :
         potential s < potential (deviation s p a) :=
-      (hpotential hs_profile ha).mp himprove
+      (hpotential hs_profile ha).mp hstrict
     exact (not_lt_of_ge (hs_local p a ha)) hpotential_rises
 
 /--
@@ -359,10 +365,7 @@ theorem exists_nash_maximizing_generalized_ordinal_potential
     exact hmax t (Finset.mem_filter.mpr ⟨Finset.mem_univ _, ht⟩)
   have hs_nash : IsNash G s := by
     refine ⟨hs_profile, ?_⟩
-    intro p a ha
-    by_contra hnot
-    have himprove : G.payoff p s < G.payoff p (deviation s p a) :=
-      lt_of_not_ge hnot
+    intro p a ha himprove
     have hdeviation_profile : IsProfile G (deviation s p a) :=
       deviation_isProfile G hs_profile ha
     have hdeviation_mem : deviation s p a ∈ legal :=

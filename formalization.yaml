@@ -6,8 +6,11 @@ project:
   description: >-
     Formalizes finite strategic-form games with player-specific finite move
     sets, pure profiles, unilateral deviations, best responses, dominant
-    strategies, and two distinct potential notions. The library names the
-    one-way improvement condition a generalized ordinal potential and reserves
+    strategies, and two distinct potential notions. Pure Nash equilibrium is
+    defined over utility preorders by the absence of a strict improvement;
+    weak-inequality characterizations are restricted to linear orders. The
+    library names the one-way improvement condition a generalized ordinal
+    potential and reserves
     ordinal potential for the standard bidirectional strict-sign condition.
     It proves a global potential-maximizer certificate for pure Nash
     equilibrium, the standard Nash/local-potential-maximum equivalence, and
@@ -298,7 +301,11 @@ alignment:
       lean: "NashEquilibrium.IsNash"
       module: "NashEquilibrium/Basic.lean"
       status: "defined"
-      note: "No legal unilateral deviation improves the deviating player's payoff."
+      note: >-
+        No legal unilateral deviation is strictly better for its deviating
+        player. The definition is valid for utility preorders, including
+        incomparable deviations; weak-inequality characterizations use linear
+        orders explicitly.
     - source: "Finite mixed profiles"
       lean: "NashEquilibrium.IsMixedProfile"
       module: "NashEquilibrium/Mixed.lean"

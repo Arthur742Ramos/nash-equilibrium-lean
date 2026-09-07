@@ -6,6 +6,10 @@ deviations, best responses, dominant strategies, and two carefully separated
 potential notions. `IsGeneralizedOrdinalPotential` is the one-way condition
 that every strict payoff improvement raises the potential. `IsOrdinalPotential`
 is reserved for the standard bidirectional strict-sign equivalence.
+`IsNash` itself is defined over a utility `Preorder` by the absence of a
+strictly improving deviation; it does not silently require every deviation to
+be weakly below the current payoff. The weak-inequality best-response
+characterization is therefore stated only for linearly ordered utilities.
 
 The selected theorem surface combines finite improvement dynamics and mixed equilibria:
 

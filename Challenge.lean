@@ -43,11 +43,15 @@ def deviation (s : Profile Player Move) (p : Player) (a : Move) :
     Profile Player Move :=
   Function.update s p a
 
-/-- A profile is a pure Nash equilibrium when no legal deviation improves payoffs. -/
+/-- A profile is a pure Nash equilibrium when no legal unilateral deviation is
+strictly better for its deviating player. This direct strict-improvement
+formulation remains correct for arbitrary utility preorders: an incomparable
+deviation is not itself a strict improvement. -/
 def IsNash [Preorder Utility] (G : Game Player Move Utility)
     (s : Profile Player Move) : Prop :=
   IsProfile G s ∧
-    ∀ p a, a ∈ G.strategies p → G.payoff p (deviation s p a) ≤ G.payoff p s
+    ∀ p a, a ∈ G.strategies p →
+      ¬ G.payoff p s < G.payoff p (deviation s p a)
 
 /-- The generalized ordinal-potential condition, with a one-way implication. -/
 def IsGeneralizedOrdinalPotential [LinearOrder Utility] [LinearOrder PotentialValue]
@@ -172,10 +176,7 @@ theorem exists_nash_maximizing_ordinal_potential
     exact hmax t (Finset.mem_filter.mpr ⟨Finset.mem_univ _, ht⟩)
   have hs_nash : IsNash G s := by
     refine ⟨hs_profile, ?_⟩
-    intro p a ha
-    by_contra hnot
-    have himprove : G.payoff p s < G.payoff p (deviation s p a) :=
-      lt_of_not_ge hnot
+    intro p a ha himprove
     have hdeviation_profile : IsProfile G (deviation s p a) :=
       deviation_isProfile G hs_profile ha
     have hdeviation_mem : deviation s p a ∈ legal :=
@@ -205,14 +206,11 @@ theorem isNash_iff_potential_local_maximum
     have himprove :
         G.payoff p s < G.payoff p (deviation s p a) :=
       (hpotential hs_profile ha).mpr hpotential_rises
-    exact (not_lt_of_ge (hs_nash p a ha)) himprove
+    exact (hs_nash p a ha) himprove
   · intro hs
     rcases hs with ⟨hs_profile, hs_local⟩
     refine ⟨hs_profile, ?_⟩
-    intro p a ha
-    by_contra hnot
-    have himprove :
-        G.payoff p s < G.payoff p (deviation s p a) := lt_of_not_ge hnot
+    intro p a ha himprove
     have hpotential_rises :
         potential s < potential (deviation s p a) :=
       (hpotential hs_profile ha).mp himprove
